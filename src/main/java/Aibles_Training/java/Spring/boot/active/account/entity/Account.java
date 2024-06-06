@@ -1,24 +1,23 @@
 package Aibles_Training.java.Spring.boot.active.account.entity;
 
-
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "account")
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id ;
+    private Long id;
     private String username;
+    private boolean activated;
     private String email;
-    private boolean isActive;
 
-    public boolean isActive() {
-        return isActive;
+    public String getEmail() {
+        return email;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Account() {
@@ -40,20 +39,20 @@ public class Account {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
+    public boolean isActivated() {
+        return activated;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 
     @Override
     public String toString() {
-        return "ActiveAccountEntity{" +
-                "id='" + getId() + '\'' +
+        return "OtpAccount{" +
+                "id=" + getId() +
                 ", username='" + getUsername() + '\'' +
-                ", email='" + getEmail() + '\'' +
+                ", activated=" + isActivated() +
                 '}';
     }
 }
