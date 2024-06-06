@@ -1,11 +1,11 @@
 package Aibles_Training.java.Spring.boot.active.account.dto.response;
 
-public class Response {
+public class BaseResponse {
     private String code;
     private long timestamp;
     private Object data;
 
-    public Response(String code, long timestamp, Object data) {
+    public BaseResponse(String code, long timestamp, Object data) {
         this.code=code;
         this.timestamp=timestamp;
         this.data = data;
