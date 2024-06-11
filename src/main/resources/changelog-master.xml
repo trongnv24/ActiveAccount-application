@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="create-user-table" author="your_username">
+        <createTable tableName="user_profile">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="varchar(10)"/>
+            <column name="address" type="varchar(255)"/>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_by" type="varchar(255)"/>
+            <column name="last_updated_at" type="bigint"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240612-add-fk-account-user" author="your_username">
+        <createTable tableName="account">
+            <column name="id" type="varchar(255)" remarks="Primary key">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="varchar(255)" remarks="Foreign key to user">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="varchar(20)" remarks="Unique username">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_activated" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_by" type="varchar(255)"/>
+            <column name="last_updated_at" type="bigint"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_account_user_id"
+                                 baseTableName="account"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="user_profile"
+                                 referencedColumnNames="id"
+                                 />
+
+
+    </changeSet>
+    <changeSet id="create-role-table" author="your_username">
+        <createTable tableName="role">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_by" type="varchar(255)"/>
+            <column name="last_updated_at" type="bigint"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="create-user_role-table" author="your_username">
+        <createTable tableName="user_role">
+            <column name="user_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_user_role_user"
+                                 baseTableName="user_role"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="user_profile"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_user_role_role"
+                                 baseTableName="user_role"
+                                 baseColumnNames="role_id"
+                                 referencedTableName="role"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

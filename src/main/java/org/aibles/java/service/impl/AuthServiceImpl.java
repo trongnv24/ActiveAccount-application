@@ -26,12 +26,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public BaseResponse activeAccount(OtpRequest request) {
-        String username = request.getUsername();
+        String Username = request.getUsername();
         String otp = request.getOtp();
-        log.info("Looking for user account with username: {}", username);
-        Optional<Account> otpAccount = authRepository.findUserAccountByUsername(username);
+        log.info("Looking for user account with username: {}", Username);
+        Optional<Account> otpAccount = authRepository.findByUserName(Username);
         if (otpAccount.isEmpty()) {
-            log.error("Username was not registered", username);
+            log.error("Username was not registered", Username);
             Map<String, String> errorDetails = new HashMap<>();
             errorDetails.put("message", "User not found");
             throw new NotFoundException(errorDetails);
@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
             return new BaseResponse<>("success", System.currentTimeMillis(), null);
         }
 
-        String storedOtp = redisService.findOtp(username);
+        String storedOtp = redisService.findOtp(Username);
         if (storedOtp == null) {
             throw new InvalidRequestException("OTP has expired");
         } else if (!storedOtp.equals(otp)) {
@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
         account.setActivated(true);
         authRepository.save(account);
 
-        redisService.clearActiveOtp(username);
+        redisService.clearActiveOtp(Username);
 
         return new BaseResponse("success", System.currentTimeMillis(), null);
     }

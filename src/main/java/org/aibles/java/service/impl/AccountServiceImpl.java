@@ -2,7 +2,7 @@ package org.aibles.java.service.impl;
 
 import org.aibles.java.dto.request.ActiveAccountRequest;
 import org.aibles.java.dto.response.BaseResponse;
-import org.aibles.java.entity.Account;
+import org.aibles.java.entity.User;
 import org.aibles.java.exception.InvalidRequestException;
 import org.aibles.java.repository.AccountRepository;
 import org.aibles.java.service.AccountService;
@@ -30,18 +30,18 @@ public class AccountServiceImpl implements AccountService {
     public BaseResponse activeAccount(ActiveAccountRequest request) {
         log.info(" === Start api activeAccount === ");
         log.info(" === Request Body: {} === ", request);
-        String username = request.getUsername();
-        if (username == null || username.trim().isEmpty()) {
+        String name = request.getUsername();
+        if (name == null || name.trim().isEmpty()) {
             throw new InvalidRequestException("Username cannot be blank or empty.");
         }
         log.info("Checking user existence in database.");
-        Optional<Account> optionalActiveAccount = activeAccountRepository.findByUsername(username.trim());
+        Optional<User> optionalActiveAccount = activeAccountRepository.findByName(name.trim());
         if (!optionalActiveAccount.isPresent()) {
-            throw new InvalidRequestException("username: " + username + " not found or invalid");
+            throw new InvalidRequestException("username: " + name + " not found or invalid");
         }
         String otp = generateOTP();
-        redisService.saveOTP(username, otp);
-        log.info("OTP {} saved to Redis for username {}", otp, username);
+        redisService.saveOTP(name, otp);
+        log.info("OTP {} saved to Redis for username {}", otp, name);
         mailServiceImpl.sendOTP(optionalActiveAccount.get().getEmail(), otp);
         log.info("OTP sent to email: {}", optionalActiveAccount.get().getEmail());
         log.info("optionalActiveAccount: {}", optionalActiveAccount.get().getId());

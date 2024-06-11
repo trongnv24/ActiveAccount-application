@@ -8,20 +8,14 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
-    private boolean activated;
-    private String email;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Account() {
-    }
+    private String userId;
+    private String userName;
+    private boolean isActivated;
+    private String password;
+    private String createdBy;
+    private String LocalDateTime;
+    private String lastUpdatedBy;
+    private String lastUpdatedAt;
 
     public Long getId() {
         return id;
@@ -31,28 +25,73 @@ public class Account {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUsername() {
+        return userName;
+    }
+
+    public void setUsername(String userName) {
+        this.userName = userName;
     }
 
     public boolean isActivated() {
-        return activated;
+        return isActivated;
     }
 
     public void setActivated(boolean activated) {
-        this.activated = activated;
+        isActivated = activated;
     }
 
-    @Override
-    public String toString() {
-        return "OtpAccount{" +
-                "id=" + getId() +
-                ", username='" + getUsername() + '\'' +
-                ", activated=" + isActivated() +
-                '}';
+    public String getPassword() {
+        return password;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getLocalDateTime() {
+        return LocalDateTime;
+    }
+
+    public void setLocalDateTime(String localDateTime) {
+        LocalDateTime = localDateTime;
+    }
+
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(String lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
+    }
+
+    public String getLastUpdatedAt() {
+        return lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(String lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
+    }
+
+    public Account() {
+
+
+    }
+
 }
