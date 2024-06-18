@@ -1,12 +1,12 @@
 package org.aibles.java.repository;
 
-import org.aibles.java.entity.User;
+import org.aibles.java.entity.UserProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface AccountRepository extends JpaRepository<org.aibles.java.entity.User, Long> {
-    Optional<User> findByName(String name);
+public interface ActiveRepository extends JpaRepository<UserProfile, String> {
+    Optional<UserProfile> findByName(String name);
 }

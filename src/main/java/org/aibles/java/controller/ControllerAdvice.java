@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,5 +31,17 @@ public class ControllerAdvice {
         ErrorDetail errorDetail = new ErrorDetail(exception.getMessage());
         ErrorResponse errorResponse = new ErrorResponse("invalid_otp", System.currentTimeMillis(), errorDetail);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("message", ex.getReason());
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("path", "/api/v1/users/register");
+        responseBody.put("timestamps", Instant.now().getEpochSecond());
+        responseBody.put("error", errorDetails);
+
+        return new ResponseEntity<>(responseBody, ex.getStatusCode());
     }
 }

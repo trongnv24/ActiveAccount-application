@@ -1,31 +1,38 @@
 package org.aibles.java.entity;
 
 import jakarta.persistence.*;
+import org.aibles.java.entity.id.UserRoleId;
 
-@Table(name = "user_roles")
+@Table(name = "user_role")
 @Entity
+@IdClass(UserRoleId.class)
 public class UserRole {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
-    private Long roleId;
+    private String userId;
+    @Id
+    private String roleId;
 
     public UserRole() {
     }
 
-    public Long getUserId() {
+    public UserRole(String userId, String roleId) {
+        this.userId = userId;
+        this.roleId = roleId;
+    }
+
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public Long getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Long roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 }

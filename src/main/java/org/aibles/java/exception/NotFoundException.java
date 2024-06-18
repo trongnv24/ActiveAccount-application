@@ -3,6 +3,7 @@ package org.aibles.java.exception;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
 import java.util.Map;

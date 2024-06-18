@@ -2,9 +2,9 @@ package org.aibles.java.service.impl;
 
 import org.aibles.java.dto.request.ActiveAccountRequest;
 import org.aibles.java.dto.response.BaseResponse;
-import org.aibles.java.entity.User;
+import org.aibles.java.entity.UserProfile;
 import org.aibles.java.exception.InvalidRequestException;
-import org.aibles.java.repository.AccountRepository;
+import org.aibles.java.repository.ActiveRepository;
 import org.aibles.java.service.AccountService;
 import org.aibles.java.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +16,11 @@ import java.util.Random;
 @Service
 @Slf4j
 public class AccountServiceImpl implements AccountService {
-    private final AccountRepository activeAccountRepository;
+    private final ActiveRepository activeAccountRepository;
     private final RedisService redisService;
     private final MailServiceImpl mailServiceImpl;
 
-    public AccountServiceImpl(AccountRepository activeAccountRepository, RedisService redisService, MailServiceImpl mailServiceImpl) {
+    public AccountServiceImpl(ActiveRepository activeAccountRepository, RedisService redisService, MailServiceImpl mailServiceImpl) {
         this.activeAccountRepository = activeAccountRepository;
         this.redisService = redisService;
         this.mailServiceImpl = mailServiceImpl;
@@ -35,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
             throw new InvalidRequestException("Username cannot be blank or empty.");
         }
         log.info("Checking user existence in database.");
-        Optional<User> optionalActiveAccount = activeAccountRepository.findByName(name.trim());
+        Optional<UserProfile> optionalActiveAccount = activeAccountRepository.findByName(name.trim());
         if (!optionalActiveAccount.isPresent()) {
             throw new InvalidRequestException("username: " + name + " not found or invalid");
         }

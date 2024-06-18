@@ -1,15 +1,14 @@
 package org.aibles.java.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Roles")
+@Table(name = "role")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
+    @Column(nullable = false, unique = true)
     private String name;
     private String createdBy;
     private String lastUpdatedBy;
@@ -18,11 +17,11 @@ public class Role {
     public Role() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
