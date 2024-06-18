@@ -8,9 +8,12 @@ import org.aibles.java.dto.response.UserRegisterResponse;
 import org.aibles.java.entity.Role;
 import org.aibles.java.entity.UserProfile;
 import org.aibles.java.entity.UserRole;
+import org.aibles.java.event.EmailEvent;
+import org.aibles.java.event.listener.EmailEventListener;
 import org.aibles.java.repository.*;
 import org.aibles.java.service.MailService;
 import org.aibles.java.service.UserRegisterService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -29,15 +33,17 @@ public class UserRegisterServiceImpl implements UserRegisterService {
     private final UserRoleRepository userRoleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRegisterRepository accountRepository;
-    private final MailService mailService;
+    private final ApplicationEventPublisher eventPublisher;
+    private final EmailEventListener emailEventListener;
 
-    public UserRegisterServiceImpl(UserRepository registerRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository, UserRegisterRepository accountRepository, MailService mailService) {
+    public UserRegisterServiceImpl(UserRepository registerRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository, UserRegisterRepository accountRepository, ApplicationEventPublisher eventPublisher, EmailEventListener emailEventListener) {
         this.registerRepository = registerRepository;
         this.roleRepository = roleRepository;
         this.userRoleRepository = userRoleRepository;
         this.accountRepository = accountRepository;
-        this.mailService = mailService;
+        this.eventPublisher = eventPublisher;
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.emailEventListener = emailEventListener;
     }
 
     @Transactional
@@ -79,13 +85,19 @@ public class UserRegisterServiceImpl implements UserRegisterService {
         account.setCreateAt(Instant.now().getEpochSecond());
         accountRepository.save(account);
 
-        mailService.sendSimpleMessage(user.getEmail(), "Welcome to our service", "Thank you for registering!");
+        eventPublisher.publishEvent(new EmailEvent(this,request.getEmail(), generateOtp() ));
+
         UserRegisterResponse response = new UserRegisterResponse();
         response.setId(user.getId());
         response.setName(user.getName());
         response.setEmail(user.getEmail());
-        response.setPassword(user.getPassword());
         return response;
+    }
+
+    private String generateOtp() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+        return String.valueOf(otp);
     }
 }
 

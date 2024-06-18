@@ -1,28 +1,25 @@
 package org.aibles.java.dto.response;
 
-import org.aibles.java.dto.request.UserRegisterRequest;
 
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class UserRegisterResponse extends UserRegisterRequest {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserRegisterResponse  {
+    @Id
     private String id;
-
-    public UserRegisterResponse() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    private String name;
+    private String email;
 
     @Override
     public String toString() {
         return "RegisterResponse{" +
                 "id=" + getId() +
                 ", Name='" + getName() + '\'' +
-                ", password='" + getPassword() + '\'' +
                 ", email='" + getEmail() + '\'' +
                 '}';
     }

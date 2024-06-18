@@ -24,14 +24,5 @@ public class MailServiceImpl implements MailService {
         message.setText("Here is your OTP to access the service: " + otp);
         mailSender.send(message);
     }
-
-    @Async
-    public void sendSimpleMessage(String to, String subject, String text) {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(to);
-            message.setSubject(subject);
-            message.setText(text);
-            mailSender.send(message);
-        }
-    }
+}
 
