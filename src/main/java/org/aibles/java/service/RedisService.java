@@ -4,4 +4,5 @@ public interface RedisService {
     void saveOTP(String username, String otp);
     String findOtp(String username);
     void clearActiveOtp(String username);
+    void save(String key, String value, long expiration);
 }

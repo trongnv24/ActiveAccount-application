@@ -19,5 +19,8 @@ public class NotFoundException extends RuntimeException {
         this.timestamp = Instant.now().toEpochMilli();
         this.error = error;
     }
+    public NotFoundException(String message) {
+        super(message);
+    }
 
 }

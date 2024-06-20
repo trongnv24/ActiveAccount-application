@@ -34,16 +34,14 @@ public class UserRegisterServiceImpl implements UserRegisterService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRegisterRepository accountRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final EmailEventListener emailEventListener;
 
-    public UserRegisterServiceImpl(UserRepository registerRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository, UserRegisterRepository accountRepository, ApplicationEventPublisher eventPublisher, EmailEventListener emailEventListener) {
+    public UserRegisterServiceImpl(UserRepository registerRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository, UserRegisterRepository accountRepository, ApplicationEventPublisher eventPublisher) {
         this.registerRepository = registerRepository;
         this.roleRepository = roleRepository;
         this.userRoleRepository = userRoleRepository;
         this.accountRepository = accountRepository;
         this.eventPublisher = eventPublisher;
         this.passwordEncoder = new BCryptPasswordEncoder();
-        this.emailEventListener = emailEventListener;
     }
 
     @Transactional
@@ -93,7 +91,6 @@ public class UserRegisterServiceImpl implements UserRegisterService {
         response.setEmail(user.getEmail());
         return response;
     }
-
     private String generateOtp() {
         Random random = new Random();
         int otp = 100000 + random.nextInt(900000);

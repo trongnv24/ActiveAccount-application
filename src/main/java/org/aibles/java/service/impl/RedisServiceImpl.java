@@ -40,5 +40,20 @@ public class RedisServiceImpl implements RedisService {
         redisTemplate.delete(username);
 
     }
+
+    @Override
+    public void save(String key, String value, long expiration) {
+        redisTemplate.opsForValue().set(key, value, expiration, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public String get(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    @Override
+    public void delete(String key) {
+        redisTemplate.delete(key);
+    }
 }
 

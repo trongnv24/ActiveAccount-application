@@ -11,6 +11,10 @@ public class BaseResponse<T> {
         this.data = data;
     }
 
+    public BaseResponse() {
+
+    }
+
     public String getCode() {
         return code;
     }
