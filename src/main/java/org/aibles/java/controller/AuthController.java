@@ -18,20 +18,20 @@ public class AuthController {
     public AuthController(AuthService service) {
         this.service = service;
     }
-    @PostMapping("/accounts/active-otp")
-    @ResponseStatus(HttpStatus.OK)
-    public BaseResponse activeAccount(@Valid @RequestBody OtpRequest request, BindingResult bindingResult) {
-        log.info(" === Start api new account-active-otp === ");
-        log.info(" === Request Body: {} === ", request);
-        if (bindingResult.hasErrors()) {
-            StringBuilder errors = new StringBuilder();
-            bindingResult.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append(" "));
-            throw new IllegalArgumentException(errors.toString().trim());
-        }
-        BaseResponse response = service.activeAccount(request);
-        log.info("response: {}", response);
-        log.info(" === Finish api account-active-otp, account-active-otp Id  {} === ");
-        return response;
+        @PostMapping("/accounts/active-otp")
+        @ResponseStatus(HttpStatus.OK)
+        public BaseResponse activeAccount(@Valid @RequestBody OtpRequest request, BindingResult bindingResult) {
+            log.info(" === Start api new account-active-otp === ");
+            log.info(" === Request Body: {} === ", request);
+            if (bindingResult.hasErrors()) {
+                StringBuilder errors = new StringBuilder();
+                bindingResult.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append(" "));
+                throw new IllegalArgumentException(errors.toString().trim());
+            }
+            BaseResponse response = service.activeAccount(request);
+            log.info("response: {}", response);
+            log.info(" === Finish api account-active-otp, account-active-otp Id  {} === ");
+            return response;
     }
 }
 

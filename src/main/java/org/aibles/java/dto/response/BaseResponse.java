@@ -1,5 +1,8 @@
 package org.aibles.java.dto.response;
 
+import lombok.Data;
+
+@Data
 public class BaseResponse<T> {
     private String code;
     private long timestamp;
@@ -14,7 +17,6 @@ public class BaseResponse<T> {
     public BaseResponse() {
 
     }
-
     public String getCode() {
         return code;
     }
@@ -29,22 +31,5 @@ public class BaseResponse<T> {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    @Override
-    public String toString() {
-        return "Response{" +
-                "code='" + getCode() + '\'' +
-                ", timestamp=" + getTimestamp() +
-                ", data=" + getData() +
-                '}';
     }
 }

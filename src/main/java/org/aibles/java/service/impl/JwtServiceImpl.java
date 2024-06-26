@@ -3,25 +3,29 @@ package org.aibles.java.service.impl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.aibles.java.exception.BadRequestException;
-import org.springframework.beans.factory.annotation.Value;
 import org.aibles.java.entity.Account;
+import org.aibles.java.exception.BadRequestException;
+import org.aibles.java.repository.UserRegisterRepository;
 import org.aibles.java.service.JwtService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.ArrayList; 
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Service
 public class JwtServiceImpl implements JwtService {
-    @Value("${jwt.secret:abcdefgh}")
+    private final UserRegisterRepository userRegisterRepository;
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Value("${jwt.expirationMs}")
@@ -30,37 +34,38 @@ public class JwtServiceImpl implements JwtService {
     @Value("${jwt.refreshExpirationMs}")
     private Long jwtRefreshExpirationMs;
 
+    public JwtServiceImpl(UserRegisterRepository userRegisterRepository) {
+        this.userRegisterRepository = userRegisterRepository;
+    }
 
-    private Key key() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+    private Key getSigningKey() {
+       return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
     public String generateAccessToken(Account account) {
-
-        Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-
+        log.info("jwt secret {}", jwtSecret);
         return Jwts.builder()
-                .setSubject(account.getId())
+                .setSubject(account.getUsername())
                 .claim("id", account.getId())
                 .claim("username", account.getUsername())
                 .claim("isActivated", account.isActivated())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(getSigningKey())
                 .compact();
     }
 
     @Override
     public String generateRefreshToken(Account account) {
         return Jwts.builder()
-                .setSubject(account.getId())
+                .setSubject(account.getUsername())
                 .claim("id", account.getId())
                 .claim("username", account.getUsername())
                 .claim("isActivated", account.isActivated())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + jwtRefreshExpirationMs))
-                .signWith(key(), SignatureAlgorithm.HS256)
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -68,7 +73,7 @@ public class JwtServiceImpl implements JwtService {
     public String parseToken(String token) {
         try {
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key())
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -78,5 +83,22 @@ public class JwtServiceImpl implements JwtService {
             throw new BadRequestException("Token is invalid");
         }
     }
+    @Override
+        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                Optional<Account> accountOptional = userRegisterRepository.findByUsername(username);
+                if (accountOptional.isEmpty()) {
+                    throw new UsernameNotFoundException("User not found");
+                }
+                Account account = accountOptional.get();
+                return User.builder()
+                        .username(account.getUsername())
+                        .password(account.getPassword())
+                        .authorities(new ArrayList<>())
+                        .build();
+            }
+    @Override
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String username = parseToken(token);
+        return username.equals(userDetails.getUsername());
+    }
 }
-
